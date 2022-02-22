@@ -179,7 +179,7 @@ func (h *LCD2004Driver) Home() error {
 // Write displays the passed message on the screen.
 func (h *LCD2004Driver) Write(message string) error {
 	// This wait fixes an odd bug where the clear function doesn't always work properly.
-	// time.Sleep(1 * time.Millisecond)
+	time.Sleep(1 * time.Millisecond)
 	
 	for _, val := range message {
 		// TODO: Does \n really not work? 
