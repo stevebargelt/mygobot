@@ -47,8 +47,8 @@ const (
 	LCD2004_2NDLINEOFFSET = 0x40
 )
 
-// lcd2004Driver is a driver for the lcd2004 LCD display
-type lcd2004Driver struct {
+// LCD2004Driver is a driver for the LCD2004 LCD display
+type LCD2004Driver struct {
 	name      string
 	connector Connector
 	Config
@@ -60,19 +60,19 @@ type lcd2004Driver struct {
 	rowOffsets [4]int
 }
 
-// Newlcd2004Driver creates a new driver with specified i2c interface.
+// NewLCD2004Driver creates a new driver with specified i2c interface.
 // Params:
 //		conn Connector - the Adaptor to use with this Driver
 //
 // Optional params:
 //		i2c.WithBus(int):	bus to use with this driver
-func Newlcd2004Driver(a Connector, options ...func(Config)) *lcd2004Driver {
-	j := &lcd2004Driver{
-		name:       gobot.DefaultName("lcd2004"),
+func NewLCD2004Driver(a Connector, options ...func(Config)) *LCD2004Driver {
+	j := &LCD2004Driver{
+		name:       gobot.DefaultName("LCD2004"),
 		connector:  a,
 		Config:     NewConfig(),
 		Commander:  gobot.NewCommander(),
-		lcdAddress: 0x3E,
+		lcdAddress: 0x27,
 		rows: 4,
 		cols: 20,
 	}
@@ -108,19 +108,19 @@ func Newlcd2004Driver(a Connector, options ...func(Config)) *lcd2004Driver {
 	return j
 }
 
-// Name returns the name the lcd2004 Driver was given when created.
-func (h *lcd2004Driver) Name() string { return h.name }
+// Name returns the name the LCD2004 Driver was given when created.
+func (h *LCD2004Driver) Name() string { return h.name }
 
-// SetName sets the name for the lcd2004 Driver.
-func (h *lcd2004Driver) SetName(n string) { h.name = n }
+// SetName sets the name for the LCD2004 Driver.
+func (h *LCD2004Driver) SetName(n string) { h.name = n }
 
 // Connection returns the driver connection to the device.
-func (h *lcd2004Driver) Connection() gobot.Connection {
+func (h *LCD2004Driver) Connection() gobot.Connection {
 	return h.connector.(gobot.Connection)
 }
 
 // Start starts the backlit and the screen and initializes the states.
-func (h *lcd2004Driver) Start() (err error) {
+func (h *LCD2004Driver) Start() (err error) {
 	bus := h.GetBusOrDefault(h.connector.GetDefaultBus())
 
 	// While the chip supports 5x10 pixel characters for one line displays they
@@ -158,18 +158,18 @@ func (h *lcd2004Driver) Start() (err error) {
 	if err := h.Clear(); err != nil {
 		return err
 	}
-	
+
 	return nil
 }
 
 // Clear clears the text on the lCD display.
-func (h *lcd2004Driver) Clear() error {
+func (h *LCD2004Driver) Clear() error {
 	err := h.command([]byte{LCD_CLEARDISPLAY})
 	return err
 }
 
 // Home sets the cursor to the origin position on the display.
-func (h *lcd2004Driver) Home() error {
+func (h *LCD2004Driver) Home() error {
 	err := h.command([]byte{LCD_RETURNHOME})
 	// This wait fixes a race condition when calling home and clear back to back.
 	time.Sleep(2 * time.Millisecond)
@@ -177,7 +177,7 @@ func (h *lcd2004Driver) Home() error {
 }
 
 // Write displays the passed message on the screen.
-func (h *lcd2004Driver) Write(message string) error {
+func (h *LCD2004Driver) Write(message string) error {
 	// This wait fixes an odd bug where the clear function doesn't always work properly.
 	// time.Sleep(1 * time.Millisecond)
 	
@@ -196,7 +196,7 @@ func (h *lcd2004Driver) Write(message string) error {
 	return nil
 }
 
-// func (h *lcd2004Driver) SetPosition(left int, top int) (err error) {
+// func (h *LCD2004Driver) SetPosition(left int, top int) (err error) {
 
 // 	//h.rowOffsets := []int{ 0, 64, 20, 84 }
 
@@ -221,7 +221,7 @@ func (h *lcd2004Driver) Write(message string) error {
 
 // Scroll sets the scrolling direction for the display, either left to right, or
 // right to left.
-func (h *lcd2004Driver) Scroll(lr bool) error {
+func (h *LCD2004Driver) Scroll(lr bool) error {
 	if lr {
 		_, err := h.lcdConnection.Write([]byte{COMMAND_MODE, LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT})
 		return err
@@ -231,14 +231,14 @@ func (h *lcd2004Driver) Scroll(lr bool) error {
 	return err
 }
 
-func (h *lcd2004Driver) Halt() error { return nil }
+func (h *LCD2004Driver) Halt() error { return nil }
 
-func (h *lcd2004Driver) command(buf []byte) error {
+func (h *LCD2004Driver) command(buf []byte) error {
 	_, err := h.lcdConnection.Write(append([]byte{COMMAND_MODE}, buf...))
 	return err
 }
 
-func (h *lcd2004Driver) commandAndWait(buf []byte) error {
+func (h *LCD2004Driver) commandAndWait(buf []byte) error {
 	err := h.command(buf)
 	time.Sleep(1 * time.Millisecond)
 	return err

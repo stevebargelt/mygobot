@@ -3,7 +3,7 @@ package spi
 import (
 	"testing"
 
-	"github.com/stevebargelt/mygobot"
+	gobot "github.com/stevebargelt/mygobot"
 	"github.com/stevebargelt/mygobot/drivers/aio"
 	"github.com/stevebargelt/mygobot/gobottest"
 )
