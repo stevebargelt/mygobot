@@ -138,18 +138,18 @@ func (h *LCD2004Driver) Start() (err error) {
 	// Function must be set first to ensure that we always have the basic
 	// instruction set selected. (See PCF2119x datasheet Function_set note
 	// for one documented example of where this is necessary.
-	init_payload := []byte{COMMAND_MODE, LCD2004_FUNCCOMMAND | LCD_2LINE}
+	init_payload := []byte{COMMAND_MODE, LCD2004_FUNCCOMMAND | LCD2004_TWOLINE}
 	if _, err := h.lcdConnection.Write(init_payload); err != nil {
 		return err
 	}
 	
 	time.Sleep(1 * time.Millisecond)	
-	if _, err := h.lcdConnection.Write([]byte{COMMAND_MODE, LCD_DISPLAYCONTROL | LCD_DISPLAYON}); err != nil {
+	if _, err := h.lcdConnection.Write([]byte{COMMAND_MODE, LCD2004_DISPLAYCONTROLSET | LCD2004_DISPLAYON}); err != nil {
 		return err
 	}
 
 	time.Sleep(1 * time.Millisecond)
-	if _, err := h.lcdConnection.Write([]byte{COMMAND_MODE, LCD_ENTRYMODESET | LCD_ENTRYSHIFTINCREMENT}); err != nil {
+	if _, err := h.lcdConnection.Write([]byte{COMMAND_MODE, LCD2004_ENTRYMODESET | LCD2004_ENTRYSHIFTINCREMENT}); err != nil {
 		return err
 	}
 
@@ -163,13 +163,13 @@ func (h *LCD2004Driver) Start() (err error) {
 
 // Clear clears the text on the lCD display.
 func (h *LCD2004Driver) Clear() error {
-	err := h.command([]byte{LCD_CLEARDISPLAY})
+	err := h.command([]byte{LCD2004_CLEARDISPLAY})
 	return err
 }
 
 // Home sets the cursor to the origin position on the display.
 func (h *LCD2004Driver) Home() error {
-	err := h.command([]byte{LCD_RETURNHOME})
+	err := h.command([]byte{LCD2004_RETURNHOME})
 	// This wait fixes a race condition when calling home and clear back to back.
 	time.Sleep(2 * time.Millisecond)
 	return err
@@ -220,15 +220,15 @@ func (h *LCD2004Driver) Write(message string) error {
 
 // Scroll sets the scrolling direction for the display, either left to right, or
 // right to left.
-func (h *LCD2004Driver) Scroll(lr bool) error {
-	if lr {
-		_, err := h.lcdConnection.Write([]byte{COMMAND_MODE, LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT})
-		return err
-	}
+// func (h *LCD2004Driver) Scroll(lr bool) error {
+// 	if lr {
+// 		_, err := h.lcdConnection.Write([]byte{COMMAND_MODE, LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT})
+// 		return err
+// 	}
 
-	_, err := h.lcdConnection.Write([]byte{COMMAND_MODE, LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT})
-	return err
-}
+// 	_, err := h.lcdConnection.Write([]byte{COMMAND_MODE, LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT})
+// 	return err
+// }
 
 func (h *LCD2004Driver) Halt() error { return nil }
 
