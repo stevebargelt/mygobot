@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stevebargelt/mygobot"
+	gobot "github.com/stevebargelt/mygobot"
 	"github.com/stevebargelt/mygobot/gobottest"
 )
 
@@ -20,10 +20,10 @@ func initTestHD44780Driver() (driver *HD44780Driver) {
 func initTestHD44780Driver4BitModeWithStubbedAdaptor() (*HD44780Driver, *gpioTestAdaptor) {
 	adaptor := newGpioTestAdaptor()
 	dataPins := HD44780DataPin{
-		D4: "22",
-		D5: "18",
-		D6: "16",
-		D7: "12",
+		D4: "4",
+		D5: "5",
+		D6: "6",
+		D7: "7",
 	}
 
 	return NewHD44780Driver(adaptor, 2, 16, HD44780_4BITMODE, "13", "15", dataPins), adaptor

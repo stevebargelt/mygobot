@@ -10,3 +10,5 @@ count.out
 /stage
 vendor/
 .idea/
+go.mod
+go.sum
