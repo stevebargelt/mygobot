@@ -139,7 +139,6 @@ func (h *LCD2004Driver) Start() (err error) {
 	// instruction set selected. (See PCF2119x datasheet Function_set note
 	// for one documented example of where this is necessary.
 	init_payload := []byte{COMMAND_MODE, LCD2004_FUNCCOMMAND | LCD_2LINE}
-
 	if _, err := h.lcdConnection.Write(init_payload); err != nil {
 		return err
 	}
@@ -150,7 +149,7 @@ func (h *LCD2004Driver) Start() (err error) {
 	}
 
 	time.Sleep(1 * time.Millisecond)
-	if _, err := h.lcdConnection.Write([]byte{COMMAND_MODE, LCD_ENTRYMODESET | LCD_ENTRYSHIFTDECREMENT}); err != nil {
+	if _, err := h.lcdConnection.Write([]byte{COMMAND_MODE, LCD_ENTRYMODESET | LCD_ENTRYSHIFTINCREMENT}); err != nil {
 		return err
 	}
 
